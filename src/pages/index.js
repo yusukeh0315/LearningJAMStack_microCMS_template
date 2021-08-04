@@ -8,10 +8,10 @@ import jigyo1Img from "../images/jigyo1.jpg"
 import jigyo2Img from "../images/jigyo2.jpg"
 import jigyo3Img from "../images/jigyo3.jpg"
 
-const IndexPage = () => (
+const IndexPage = ({data}) => (
   <Layout>
     <SEO title="Home" />
-    <Row style={{maxWidth:`960px`}}> 
+    <Row style={{maxWidth:`960px`}}>
         <img src={homeImg} style={{width:`100%`,marginBottom:`2rem`}} />
     </Row>
     <Row>
@@ -19,21 +19,18 @@ const IndexPage = () => (
         <Row>
           <Col style={{backgroundColor:`cornflowerblue`,color:`white`,padding:`0.5rem`}}>インフォメーション</Col>
         </Row>
-        <Row>
-          <Col style={{padding:`0.5rem`}}>インフォメーション①</Col>
-        </Row>
-        <Row>
-          <Col style={{padding:`0.5rem`}}>インフォメーション②</Col>
-        </Row>
-        <Row>
-          <Col style={{padding:`0.5rem`}}>インフォメーション③</Col>
-        </Row>
-        <Row>
-          <Col style={{padding:`0.5rem`}}>インフォメーション④</Col>
-        </Row>
-        <Row>
-          <Col style={{padding:`0.5rem`}}>インフォメーション⑤</Col>
-        </Row>
+
+        {data.allMicrocmsInformation.edges.map(({node})=>(
+            <Row>
+                <Col style={{padding:`0.5rem`}}>
+                    <Link to={`/information/${node.id}`}>
+                        {node.category.category} {`  `} {node.title}
+                    </Link>
+                </Col>
+            </Row>
+        ))}
+
+
       </Col>
       <Col xs={12} md={6} style={{maxWidth:`480px`}}>
         <Row>
@@ -93,3 +90,22 @@ const IndexPage = () => (
 );
 
 export default IndexPage;
+
+export const query = graphql
+`
+query {
+    allMicrocmsInformation(
+        limit:4, sort: {fields: date, order: DESC}) {
+            edges {
+                node{
+                    id
+                    title
+                    date
+                    category{
+                        category
+                    }
+                }
+            }
+    }
+}
+`
